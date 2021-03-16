@@ -1,6 +1,7 @@
 import csv
 from scipy import ndimage
 import numpy as np
+import cv2
 
 
 ################################################################################
@@ -15,7 +16,7 @@ with open('../../../opt/carnd_p3/data/driving_log.csv') as csvfile:
         
 images = []
 measurements = []
-correction = 0.25
+correction = 0.4
 for line in lines[1:]:
     for i in range(3):
         source_path = line[i]
@@ -32,15 +33,20 @@ for line in lines[1:]:
         if i == 2:
             measurement = float(line[3]) + correction
             measurements.append(measurement)
-    
-X_train = np.array(images)
-y_train = np.array(measurements)
 
 ################################################################################
 # Data Augmentation
 ################################################################################
+augmented_images, augmented_measurements = [], []
+for image, measurement in zip(images, measurements):
+    augmented_images.append(image)
+    augmented_measurements.append(measurement)
+    augmented_images.append(cv2.flip(image, 1))
+    augmented_measurements.append(measurement*-1.0)
 
 
+X_train = np.array(augmented_images)
+y_train = np.array(augmented_measurements)
 ################################################################################
 # Network Architecture (LeNet)
 ################################################################################
@@ -62,6 +68,6 @@ model.add(Dense(84))
 model.add(Dense(1))
 
 model.compile(loss = 'mse', optimizer = 'adam')
-model.fit(X_train, y_train, validation_split = 0.2, shuffle = True, nb_epoch = 8)
+model.fit(X_train, y_train, validation_split = 0.2, shuffle = True, nb_epoch = 3)
 
 model.save('model.h5')
