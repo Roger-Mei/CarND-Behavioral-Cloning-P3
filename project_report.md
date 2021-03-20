@@ -15,7 +15,7 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./examples/placeholder.png "Model Visualization"
+[image1]: ./before_flipped.png "Model Visualization"
 [image2]: ./examples/placeholder.png "Grayscaling"
 [image3]: ./examples/placeholder_small.png "Recovery Image"
 [image4]: ./examples/placeholder_small.png "Recovery Image"
@@ -133,7 +133,7 @@ I only use the given data set.
 
 To augment the data sat, I flipped images and angles thinking that this would  For example, here is an image that has then been flipped:
 
-![alt text][image6]
+![alt text][image1]
 ![alt text][image7]
 
 Etc ....
