@@ -15,13 +15,9 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./before_flipped.png "Model Visualization"
-[image2]: ./examples/placeholder.png "Grayscaling"
-[image3]: ./examples/placeholder_small.png "Recovery Image"
-[image4]: ./examples/placeholder_small.png "Recovery Image"
-[image5]: ./examples/placeholder_small.png "Recovery Image"
-[image6]: ./examples/placeholder_small.png "Normal Image"
-[image7]: ./examples/placeholder_small.png "Flipped Image"
+[image1]: ./before_flipped.png "Before flipped"
+[image2]: ./flipped.png "Flipped"
+
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
@@ -131,16 +127,13 @@ Fully Connected: 1
 
 I only use the given data set.
 
-To augment the data sat, I flipped images and angles thinking that this would  For example, here is an image that has then been flipped:
+To augment the data set, I flipped images and angles thinking that this would  For example, here is an image that has then been flipped:
 
 ![alt text][image1]
-![alt text][image7]
+![alt text][image2]
 
-Etc ....
+I also use left and right camera image to augment the data set. But it is kinda tricky when adjusting the compensating sterring angle. Initially I set `correction = 1.25` and the car's behavior is too drastic. After rounds of tuning, I found the optimal value is `correction = 0.5`.
 
-After the collection process, I had X number of data points. I then preprocessed this data by ...
+I finally randomly shuffled the data set and put 20% of the data into a validation set. 
 
-
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
-
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
+I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was 4 as evidenced by the low and converged loss error in both training and validation set. I used an adam optimizer so that manually training the learning rate wasn't necessary.
