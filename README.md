@@ -92,4 +92,10 @@ Will run the video at 48 FPS. The default FPS is 60.
 ### Tips
 - Please keep in mind that training images are loaded in BGR colorspace using cv2 while drive.py load images in RGB to predict the steering angles.
 
+Video
+---
+Please click [this link](https://github.com/Roger-Mei/CarND-Behavioral-Cloning-P3/blob/master/run1.mp4) for low resolution video output.
 
+Project Report
+---
+Please click [this link](https://github.com/Roger-Mei/CarND-Behavioral-Cloning-P3/blob/master/project_report.md) for project report.
