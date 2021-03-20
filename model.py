@@ -5,6 +5,7 @@ import cv2
 import sklearn
 from sklearn.utils import shuffle
 
+
 ################################################################################
 # Utility functions
 ################################################################################
@@ -22,8 +23,8 @@ def generate_training_data(samples, batch_size=128):
             images = []
             measurements = []
 
-            correction = 1.2
-            for line in samples:
+            correction = 0.5
+            for line in batch_samples:
                 for i in range(3):
                     source_path = line[i]
                     filename = source_path.split('/')[-1]
@@ -47,10 +48,10 @@ def generate_training_data(samples, batch_size=128):
                         measurements.append(measurement) 
                         measurements.append(measurement*-1.0) # Data augmentation by flipping the image         
 
-        X_train = np.array(images)
-        y_train = np.array(measurements)
+            X_train = np.array(images)
+            y_train = np.array(measurements)
 
-        yield sklearn.utils.shuffle(X_train, y_train)
+            yield sklearn.utils.shuffle(X_train, y_train)
 ################################################################################
 # Load the data
 ################################################################################
@@ -122,43 +123,63 @@ from keras.layers import Flatten, Dense, Lambda, Cropping2D
 from keras.layers.convolutional import Convolution2D
 from keras.layers.pooling import MaxPooling2D
 
-################################### LeNet ######################################
+# ################################### LeNet ######################################
+# model = Sequential()
+# model.add(Cropping2D(cropping = ((50, 20), (0, 0)), input_shape=(160,320,3))) # Cropping the data to reduce the distraction
+# model.add(Lambda(lambda x: x/255.0 - 0.5)) # Normalizing the data
+# model.add(Convolution2D(6, 5, 5, activation = "relu"))
+# model.add(MaxPooling2D())
+# model.add(Convolution2D(6, 5, 5, activation = "relu"))
+# model.add(MaxPooling2D())
+# model.add(Flatten())
+# model.add(Dense(120))
+# model.add(Dense(84))
+# model.add(Dense(1))
+
+################################### NVDIA CNN ######################################
 model = Sequential()
 model.add(Cropping2D(cropping = ((50, 20), (0, 0)), input_shape=(160,320,3))) # Cropping the data to reduce the distraction
 model.add(Lambda(lambda x: x/255.0 - 0.5)) # Normalizing the data
-model.add(Convolution2D(6, 5, 5, activation = "relu"))
-model.add(MaxPooling2D())
-model.add(Convolution2D(6, 5, 5, activation = "relu"))
-model.add(MaxPooling2D())
+model.add(Convolution2D(24, (5, 5), strides = (2, 2), activation = "relu"))
+model.add(Convolution2D(36, (5, 5), strides = (2, 2), activation = "relu"))
+model.add(Convolution2D(48, (5, 5), strides = (2, 2), activation = "relu"))
+model.add(Convolution2D(64, (3, 3), activation = "relu"))
+model.add(Convolution2D(64, (3, 3), activation = "relu"))
 model.add(Flatten())
-model.add(Dense(120))
-model.add(Dense(84))
+model.add(Dense(100))
+model.add(Dense(50))
+model.add(Dense(10))
 model.add(Dense(1))
-
-# ################################### NVDIA CNN ######################################
-# model =Sequential()
-# model.add(Cropping2D(cropping = ((50, 20), (0, 0)))) # Cropping the data to reduce the distraction
-# model.add(Lambda(lambda x: x/255.0 - 0.5)) # Normalizing the data
-# model.add(Convolution2D(24, 5, 2, activation = "relu"))
-# model.add(Convolution2D(36, 5, 2, activation = "relu"))
-# model.add(Convolution2D(48, 5, 2, activation = "relu"))
-# model.add(Convolution2D(64, 3, 1, activation = "relu"))
-# model.add(Convolution2D(64, 3, 1, activation = "relu"))
-# model.add(Flatten())
-# model.add(Dense(100))
-# model.add(Dense(50))
-# model.add(Dense(10))
-# model.add(Dense(1))
 
 
 
 # model.compile(loss = 'mse', optimizer = 'adam')
 # model.fit(X_train, y_train, validation_split = 0.2, shuffle = True, nb_epoch = 4)
 model.compile(optimizer='adam', loss='mse')
-model.fit_generator(train_generator, \
+history_object = model.fit_generator(train_generator, \
             steps_per_epoch=np.ceil(len(train_samples)/batch_size), \
             validation_data=validation_generator, \
             validation_steps=np.ceil(len(validation_samples)/batch_size), \
             epochs=4, verbose=1)
 
 model.save('model.h5')
+print("Model saved.")
+################################################################################
+# Data Visualization
+################################################################################
+
+from keras.models import Model
+import matplotlib.pyplot as plt
+
+### print the keys contained in the history object
+print(history_object.history.keys())
+
+### plot the training and validation loss for each epoch
+plt.plot(history_object.history['loss'])
+plt.plot(history_object.history['val_loss'])
+plt.title('model mean squared error loss')
+plt.ylabel('mean squared error loss')
+plt.xlabel('epoch')
+plt.legend(['training set', 'validation set'], loc='upper right')
+print("Saving image...")
+plt.savefig('Loss_data.png')
