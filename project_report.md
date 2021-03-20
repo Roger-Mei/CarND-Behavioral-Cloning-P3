@@ -92,22 +92,39 @@ At the end of the process, the vehicle is able to drive autonomously around the 
 The final model architecture (model.py lines 140-152) consisted of a convolution neural network with the following layers and layer sizes:
 
 Input: 160x320x3
+
 Cropping layer: 90x320x3
+
 Normalization layer: 160x320x3
+
 Convolutional layer: 78x163x24
+
 RELU layer: 78x163x24
+
 Convolutional layer: 37x80x36
+
 RELU layer: 37x80x36
+
 Convolutional layer: 17x38x48
+
 RELU layer: 17x38x48
+
 Convolutional layer: 15x36x64
+
 RELU layer: 15x36x64
+
 Convolutional layer: 13x34x64
+
 RELU layer: 13x34x64
+
 Flatten: 28288
+
 Fully Connected: 100
+
 Fully Connected: 50
+
 Fully Connected: 10
+
 Fully Connected: 1
 
 
